@@ -1,0 +1,1632 @@
+[
+    {
+        "id": "c6649296a9f2821a",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "5382bd6647027f34",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 570,
+        "y": 1740,
+        "wires": [
+            [
+                "eb6f7eef5083e140"
+            ]
+        ]
+    },
+    {
+        "id": "9b9671553a765094",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "control_Power",
+        "func": "var update = msg.payload;\nvar device_id = update.device_id;\nvar value = update.value;\nmsg.payload = [device_id,value];\nmsg.topic = \"INSERT INTO app_control_power(device_id,power)VALUES(?,?);\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 820,
+        "wires": [
+            [
+                "982854a020b9017b"
+            ]
+        ]
+    },
+    {
+        "id": "5c64c1bfaa88c5ee",
+        "type": "http in",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "url": "/create",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 1740,
+        "wires": [
+            [
+                "85779dc7401b01b5"
+            ]
+        ]
+    },
+    {
+        "id": "85779dc7401b01b5",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "create_user",
+        "func": "let user = msg.payload;\nlet username = user.username;\nlet name = user.name;\nlet lastname = user.lastname;\nmsg.payload = [username,name,lastname];\nmsg.topic = \"INSERT INTO user(username,name,lastname) VALUES(?,?,?);\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 1740,
+        "wires": [
+            [
+                "5382bd6647027f34"
+            ]
+        ]
+    },
+    {
+        "id": "b297ea56ab9db856",
+        "type": "http in",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "url": "/control/power",
+        "method": "patch",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 220,
+        "y": 880,
+        "wires": [
+            [
+                "9b9671553a765094",
+                "f841d8bde0412e42"
+            ]
+        ]
+    },
+    {
+        "id": "adb59a2b84689271",
+        "type": "http in",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "url": "/create_device",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 190,
+        "y": 1840,
+        "wires": [
+            [
+                "d0c0b844d346c0cf"
+            ]
+        ]
+    },
+    {
+        "id": "d0c0b844d346c0cf",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "device_create",
+        "func": "let add_device = msg.payload;\nlet user_id = add_device.user_id;\nlet client_id = add_device.client_id;\nmsg.payload = [user_id,client_id];\nmsg.topic = \"INSERT INTO device(user_id,client_id) VALUES(?,?);\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 1840,
+        "wires": [
+            [
+                "eb84fbbbc034c86e"
+            ]
+        ]
+    },
+    {
+        "id": "982854a020b9017b",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 670,
+        "y": 820,
+        "wires": [
+            [
+                "901668e801c79ce7"
+            ]
+        ]
+    },
+    {
+        "id": "424a8feb07a2a463",
+        "type": "http in",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "url": "/show",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 1560,
+        "wires": [
+            [
+                "54eafd27c886356e"
+            ]
+        ]
+    },
+    {
+        "id": "54eafd27c886356e",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "show",
+        "func": "var show = msg.payload;\nvar username = show.username;\nmsg.topic =\"SELECT user_id FROM user WHERE username = '\"+username+\"' LIMIT 1 \"; \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 1560,
+        "wires": [
+            [
+                "f3377490e747608d"
+            ]
+        ]
+    },
+    {
+        "id": "c5a06e2e90696f5b",
+        "type": "http response",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 1880,
+        "y": 1600,
+        "wires": []
+    },
+    {
+        "id": "f3377490e747608d",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 510,
+        "y": 1560,
+        "wires": [
+            [
+                "64411d859f2db60b"
+            ]
+        ]
+    },
+    {
+        "id": "e6f6519a7ff07e87",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "Select_app_control_power",
+        "func": "var update = msg.payload;\nvar device_id = update.device_id;\nmsg.payload = device_id;\nmsg.topic = \"SELECT power FROM app_control_power WHERE device_id = \"+device_id+\" LIMIT 1\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 960,
+        "wires": [
+            [
+                "8d5b988334e2d909"
+            ]
+        ]
+    },
+    {
+        "id": "eb84fbbbc034c86e",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 690,
+        "y": 1840,
+        "wires": [
+            [
+                "64c668a78c1c4066"
+            ]
+        ]
+    },
+    {
+        "id": "93a08945bfb33348",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 670,
+        "y": 200,
+        "wires": [
+            [
+                "ec3d9c537207cf9d"
+            ]
+        ]
+    },
+    {
+        "id": "8d5b988334e2d909",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 910,
+        "y": 960,
+        "wires": [
+            [
+                "1cdd605bcd5fe0aa"
+            ]
+        ]
+    },
+    {
+        "id": "a8d99a8d93a07abb",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "Select_device",
+        "func": "var update = msg.payload;\nvar device_id = update.device_id;\nmsg.payload = device_id;\nmsg.topic = \"SELECT client_id FROM device WHERE device_id = \"+device_id+\" LIMIT 1\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 900,
+        "wires": [
+            [
+                "6547b79aee1a68cd"
+            ]
+        ]
+    },
+    {
+        "id": "6547b79aee1a68cd",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 910,
+        "y": 900,
+        "wires": [
+            [
+                "54e53b8078afa0ce"
+            ]
+        ]
+    },
+    {
+        "id": "64c668a78c1c4066",
+        "type": "http response",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 940,
+        "y": 1840,
+        "wires": []
+    },
+    {
+        "id": "9c2e82cda03f5ede",
+        "type": "mqtt in",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "topic": "mc/v1/#",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "06044633b5fe67a5",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 280,
+        "wires": [
+            [
+                "fe65293bc3fa9f24",
+                "d2dc531451338e0e"
+            ]
+        ]
+    },
+    {
+        "id": "fe65293bc3fa9f24",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "client_id_and_data",
+        "func": "let sep = msg.topic.split(\"/\");\nmsg.topic = \"SELECT device_id FROM device WHERE client_id ='\"+sep[2]+\"' LIMIT 1\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 200,
+        "wires": [
+            [
+                "93a08945bfb33348"
+            ]
+        ]
+    },
+    {
+        "id": "d2dc531451338e0e",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "sepperate_data(sensor)",
+        "func": "let sep = msg.topic.split(\"/\");\nlet value = msg.payload;\nlet temp = value.temp;\nlet humi = value.humi;\nlet topic = sep[4];\nmsg.payload ={\n        \"topic\":topic,\n        \"temp\":temp,\n        \"humi\":humi\n\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 280,
+        "wires": [
+            [
+                "aa4b0b88e56dbf3e"
+            ]
+        ]
+    },
+    {
+        "id": "0d4b00369fc37826",
+        "type": "debug",
+        "z": "c6649296a9f2821a",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1500,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "8db218e1363de524",
+        "type": "http response",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 1060,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "901668e801c79ce7",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "control_Power",
+        "func": "msg.payload =\"success\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 820,
+        "wires": [
+            [
+                "8db218e1363de524"
+            ]
+        ]
+    },
+    {
+        "id": "47a94ddc1cb10932",
+        "type": "http response",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 940,
+        "y": 1740,
+        "wires": []
+    },
+    {
+        "id": "eb6f7eef5083e140",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 11",
+        "func": "msg.payload =\"user has regristered\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 1740,
+        "wires": [
+            [
+                "47a94ddc1cb10932"
+            ]
+        ]
+    },
+    {
+        "id": "6b3b2ae3b83f6e6a",
+        "type": "http in",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "url": "/update",
+        "method": "patch",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 1940,
+        "wires": [
+            [
+                "a48843ddae5e7637"
+            ]
+        ]
+    },
+    {
+        "id": "a48843ddae5e7637",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 12",
+        "func": "let add_device = msg.payload;\nlet user_id = add_device.user_id;\nlet client_id = add_device.client_id;\nmsg.payload = [client_id,user_id];\nmsg.topic = \"UPDATE device SET client_id = ? WHERE user_id = ?;\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 1940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ec3d9c537207cf9d",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 13",
+        "func": "let device_id = msg.payload[0].device_id;\nmsg.payload = {\n    \"device_id\":device_id\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 220,
+        "wires": [
+            [
+                "aa4b0b88e56dbf3e"
+            ]
+        ]
+    },
+    {
+        "id": "aa4b0b88e56dbf3e",
+        "type": "join",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "mode": "custom",
+        "build": "merged",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "1",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 970,
+        "y": 280,
+        "wires": [
+            [
+                "cee2e409567d940b"
+            ]
+        ]
+    },
+    {
+        "id": "54e53b8078afa0ce",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 14",
+        "func": "let client_id = msg.payload[0].client_id\nmsg.payload = {\n\n    \"client_id\":client_id\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1090,
+        "y": 900,
+        "wires": [
+            [
+                "3b61cc28a5917a32"
+            ]
+        ]
+    },
+    {
+        "id": "1cdd605bcd5fe0aa",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 15",
+        "func": "let power = msg.payload[0].power;\nmsg.payload = {\n    \"value\":power\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1090,
+        "y": 960,
+        "wires": [
+            [
+                "3b61cc28a5917a32"
+            ]
+        ]
+    },
+    {
+        "id": "3b61cc28a5917a32",
+        "type": "join",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "mode": "custom",
+        "build": "merged",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "1",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1270,
+        "y": 920,
+        "wires": [
+            [
+                "aa3f25cd3921f92a"
+            ]
+        ]
+    },
+    {
+        "id": "50bd3e0bc56a6e15",
+        "type": "mqtt out",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "topic": "",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "06044633b5fe67a5",
+        "x": 1590,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "801448d421af9b20",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "control_light",
+        "func": "var update = msg.payload;\nvar device_id = update.device_id;\nvar value = update.value;\nmsg.payload = [device_id,value];\nmsg.topic = \"INSERT INTO app_control_light(device_id,light)VALUES(?,?);\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1020,
+        "wires": [
+            [
+                "511d883bcaeb2b8e"
+            ]
+        ]
+    },
+    {
+        "id": "c10ff221ff7b4311",
+        "type": "http in",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "url": "/control/light",
+        "method": "patch",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 190,
+        "y": 1080,
+        "wires": [
+            [
+                "801448d421af9b20",
+                "3de9a71b77ad8d76"
+            ]
+        ]
+    },
+    {
+        "id": "511d883bcaeb2b8e",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 650,
+        "y": 1020,
+        "wires": [
+            [
+                "bf9c8f2e60f8b6aa"
+            ]
+        ]
+    },
+    {
+        "id": "aae18277788ae29b",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "Select_app_control_light",
+        "func": "var update = msg.payload;\nvar device_id = update.device_id;\nmsg.payload = device_id;\nmsg.topic = \"SELECT light FROM app_control_light WHERE device_id = \"+device_id+\" LIMIT 1\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 1160,
+        "wires": [
+            [
+                "2e5ee0230babd065"
+            ]
+        ]
+    },
+    {
+        "id": "3de9a71b77ad8d76",
+        "type": "delay",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 390,
+        "y": 1140,
+        "wires": [
+            [
+                "aae18277788ae29b",
+                "0351c2956686de18"
+            ]
+        ]
+    },
+    {
+        "id": "2e5ee0230babd065",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 890,
+        "y": 1160,
+        "wires": [
+            [
+                "698109feac2901bf"
+            ]
+        ]
+    },
+    {
+        "id": "e48cc897835811df",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 16",
+        "func": "let values = msg.payload;\nlet client_id = values.client_id;\nlet light = values.value;\nmsg.payload = {\n    \"value\":light\n}\nmsg.topic = \"mc/v1/\"+client_id+\"/control/light\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1390,
+        "y": 1140,
+        "wires": [
+            [
+                "a66204a2be3a258b"
+            ]
+        ]
+    },
+    {
+        "id": "0351c2956686de18",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "Select_device",
+        "func": "var update = msg.payload;\nvar device_id = update.device_id;\nmsg.payload = device_id;\nmsg.topic = \"SELECT client_id FROM device WHERE device_id = \"+device_id+\" LIMIT 1\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 1100,
+        "wires": [
+            [
+                "ddf800b29b911dd6"
+            ]
+        ]
+    },
+    {
+        "id": "ddf800b29b911dd6",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 890,
+        "y": 1100,
+        "wires": [
+            [
+                "e0701063e904ae4b"
+            ]
+        ]
+    },
+    {
+        "id": "7ff7517d10057793",
+        "type": "http response",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 1080,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "bf9c8f2e60f8b6aa",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "control_light",
+        "func": "msg.payload =\"success\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 1020,
+        "wires": [
+            [
+                "7ff7517d10057793"
+            ]
+        ]
+    },
+    {
+        "id": "e0701063e904ae4b",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 17",
+        "func": "let client_id = msg.payload[0].client_id\nmsg.payload = {\n\n    \"client_id\":client_id\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 1100,
+        "wires": [
+            [
+                "274ca1a5e0f64347"
+            ]
+        ]
+    },
+    {
+        "id": "698109feac2901bf",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 18",
+        "func": "let light = msg.payload[0].light;\nmsg.payload = {\n    \"value\":light\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 1160,
+        "wires": [
+            [
+                "274ca1a5e0f64347"
+            ]
+        ]
+    },
+    {
+        "id": "274ca1a5e0f64347",
+        "type": "join",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "mode": "custom",
+        "build": "merged",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "1",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1250,
+        "y": 1140,
+        "wires": [
+            [
+                "e48cc897835811df"
+            ]
+        ]
+    },
+    {
+        "id": "a66204a2be3a258b",
+        "type": "mqtt out",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "topic": "",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "06044633b5fe67a5",
+        "x": 1550,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "aa3f25cd3921f92a",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 8",
+        "func": "let values = msg.payload;\nlet client_id = values.client_id;\nlet power = values.value;\nmsg.payload = {\n    \"value\":power\n}\nmsg.topic = \"mc/v1/\"+client_id+\"/control/power\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1420,
+        "y": 920,
+        "wires": [
+            [
+                "50bd3e0bc56a6e15"
+            ]
+        ]
+    },
+    {
+        "id": "cee2e409567d940b",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "value",
+        "func": "let value = msg.payload;\nlet topic = value.topic;\nlet device_id = value.device_id;\nlet temp = value.temp;\nlet humi = value.humi;\nif(topic == \"value\"){\n    msg.payload = [device_id,humi,temp]\n    msg.topic = \"INSERT INTO sensor(device_id,humidity,temperature)VALUES(?,?,?);\"\n}\nelse{\nmsg.payload == \"ERROR ! Device has problem\"\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 280,
+        "wires": [
+            [
+                "5f41398fde6d61c2"
+            ]
+        ]
+    },
+    {
+        "id": "5f41398fde6d61c2",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 1310,
+        "y": 280,
+        "wires": [
+            [
+                "0d4b00369fc37826",
+                "7796fbda3d394f21"
+            ]
+        ]
+    },
+    {
+        "id": "64411d859f2db60b",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 20",
+        "func": "let show = msg.payload;\nlet user_id_id = show.user_id;\nmsg.topic = \"SELECT device_id FROM device WHERE user_id = ? LIMIT 1 \";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 1560,
+        "wires": [
+            [
+                "337320d035b9763f"
+            ]
+        ]
+    },
+    {
+        "id": "337320d035b9763f",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 890,
+        "y": 1560,
+        "wires": [
+            [
+                "2a2b8d0c76a0d20d",
+                "2ecd2ff310191eb8",
+                "8f00e126245a27eb"
+            ]
+        ]
+    },
+    {
+        "id": "2a2b8d0c76a0d20d",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 21",
+        "func": "let show = msg.payload;\nlet user_id_id = show.device_id;\n\nmsg.topic = \"SELECT humidity,temperature FROM sensor WHERE device_id = ? LIMIT 1\";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1090,
+        "y": 1580,
+        "wires": [
+            [
+                "4e5c568f33edd214"
+            ]
+        ]
+    },
+    {
+        "id": "4e5c568f33edd214",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 1270,
+        "y": 1580,
+        "wires": [
+            [
+                "7a7cc42dca10fa57"
+            ]
+        ]
+    },
+    {
+        "id": "d921fa41a77f148c",
+        "type": "join",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "mode": "custom",
+        "build": "merged",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "0.5",
+        "count": "3",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1650,
+        "y": 1580,
+        "wires": [
+            [
+                "0c3cd761b5ceb99d",
+                "c5a06e2e90696f5b"
+            ]
+        ]
+    },
+    {
+        "id": "7a7cc42dca10fa57",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 22",
+        "func": "let humidity = msg.payload[0].humidity\nlet temperature = msg.payload[0].temperature\nmsg.payload = {\n\n    \"humi\":humidity,\n    \"temp\":temperature\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1450,
+        "y": 1580,
+        "wires": [
+            [
+                "d921fa41a77f148c"
+            ]
+        ]
+    },
+    {
+        "id": "2ecd2ff310191eb8",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 23",
+        "func": "let show = msg.payload;\nlet user_id_id = show.device_id;\n\nmsg.topic = \"SELECT light_status,air_status,power_status,humidity_status,temperature_status FROM actuator WHERE device_id = ? LIMIT 1 \";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1090,
+        "y": 1640,
+        "wires": [
+            [
+                "504a0d8780b0d43e"
+            ]
+        ]
+    },
+    {
+        "id": "504a0d8780b0d43e",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 1270,
+        "y": 1640,
+        "wires": [
+            [
+                "d5e3bb27df90b91c"
+            ]
+        ]
+    },
+    {
+        "id": "d5e3bb27df90b91c",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 24",
+        "func": "let light = msg.payload[0].light_status;\nlet air = msg.payload[0].air_stautus;\nlet humidity = msg.payload[0].humidity_status;\nlet temperature = msg.payload[0].temperature_status;\nlet power = msg.payload[0].power_status;\nmsg.payload = {\n    \"power\":power,\n    \"light\":light,\n    \"air\":air,\n    \"humidity\":humidity,\n    \"temperature\":temperature\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1450,
+        "y": 1640,
+        "wires": [
+            [
+                "d921fa41a77f148c"
+            ]
+        ]
+    },
+    {
+        "id": "f841d8bde0412e42",
+        "type": "delay",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 410,
+        "y": 940,
+        "wires": [
+            [
+                "e6f6519a7ff07e87",
+                "a8d99a8d93a07abb"
+            ]
+        ]
+    },
+    {
+        "id": "7796fbda3d394f21",
+        "type": "http response",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 1500,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "1719262e25fbc867",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 610,
+        "y": 420,
+        "wires": [
+            [
+                "685a1bb0aa82909b"
+            ]
+        ]
+    },
+    {
+        "id": "2e34f184e0beb66c",
+        "type": "mqtt in",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "topic": "mc/v1/#",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "06044633b5fe67a5",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 440,
+        "wires": [
+            [
+                "b977234a71b5debe",
+                "035371519ee51e1b"
+            ]
+        ]
+    },
+    {
+        "id": "b977234a71b5debe",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "client_id_and_data",
+        "func": "let sep = msg.topic.split(\"/\");\nmsg.topic = \"SELECT device_id FROM device WHERE client_id ='\"+sep[2]+\"' LIMIT 1\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 420,
+        "wires": [
+            [
+                "1719262e25fbc867"
+            ]
+        ]
+    },
+    {
+        "id": "035371519ee51e1b",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "sepperate_data(initial)",
+        "func": "let sep = msg.topic.split(\"/\");\nlet value = msg.payload;\nlet version = value.version;\n\nlet topic = sep[4];\nmsg.payload ={\n        \"topic\":topic,\n        \"version\":version,\n\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 500,
+        "wires": [
+            [
+                "aa0752ebe51c78d4"
+            ]
+        ]
+    },
+    {
+        "id": "a42efa7eace1d997",
+        "type": "debug",
+        "z": "c6649296a9f2821a",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1560,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "685a1bb0aa82909b",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 25",
+        "func": "let device_id = msg.payload[0].device_id;\nmsg.payload = {\n    \"device_id\":device_id\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 460,
+        "wires": [
+            [
+                "aa0752ebe51c78d4"
+            ]
+        ]
+    },
+    {
+        "id": "aa0752ebe51c78d4",
+        "type": "join",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "mode": "custom",
+        "build": "merged",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "1",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 910,
+        "y": 500,
+        "wires": [
+            [
+                "397e0f2e6acaa0c5"
+            ]
+        ]
+    },
+    {
+        "id": "397e0f2e6acaa0c5",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "initial",
+        "func": "let value = msg.payload;\nlet topic = value.topic;\nlet device_id = value.device_id;\nlet version = value.version;\nif (topic == \"initial\"){\n    msg.payload = [device_id,version]\n    msg.topic = \"INSERT INTO initial(device_id,version)VALUES(?,?);\"\n}\nelse\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1050,
+        "y": 500,
+        "wires": [
+            [
+                "8cb3f893e8d59bf0"
+            ]
+        ]
+    },
+    {
+        "id": "8cb3f893e8d59bf0",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 1250,
+        "y": 500,
+        "wires": [
+            [
+                "a42efa7eace1d997",
+                "5da6ebd9f47b63a9"
+            ]
+        ]
+    },
+    {
+        "id": "5da6ebd9f47b63a9",
+        "type": "http response",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 1520,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "0c3cd761b5ceb99d",
+        "type": "debug",
+        "z": "c6649296a9f2821a",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1880,
+        "y": 1560,
+        "wires": []
+    },
+    {
+        "id": "8f00e126245a27eb",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 27",
+        "func": "let show = msg.payload;\nlet user_id_id = show.device_id;\n\nmsg.topic = \"SELECT version FROM initial WHERE device_id = ? LIMIT 1\";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1090,
+        "y": 1500,
+        "wires": [
+            [
+                "a5dff49a48a748f7"
+            ]
+        ]
+    },
+    {
+        "id": "a5dff49a48a748f7",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 1270,
+        "y": 1500,
+        "wires": [
+            [
+                "e69485067fa6d16d"
+            ]
+        ]
+    },
+    {
+        "id": "e69485067fa6d16d",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 28",
+        "func": "let version = msg.payload[0].version\nmsg.payload = {\n\n    \"version\":version\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1450,
+        "y": 1500,
+        "wires": [
+            [
+                "d921fa41a77f148c"
+            ]
+        ]
+    },
+    {
+        "id": "f8dd98607c9151d9",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 630,
+        "y": 640,
+        "wires": [
+            [
+                "9c3848f02e4779d0"
+            ]
+        ]
+    },
+    {
+        "id": "5459de91426bb049",
+        "type": "mqtt in",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "topic": "mc/v1/#",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "06044633b5fe67a5",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 660,
+        "wires": [
+            [
+                "a7a745581a2e77a0",
+                "5d110c23cd833ee7"
+            ]
+        ]
+    },
+    {
+        "id": "a7a745581a2e77a0",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "client_id_and_data",
+        "func": "let sep = msg.topic.split(\"/\");\nmsg.topic = \"SELECT device_id FROM device WHERE client_id ='\"+sep[2]+\"' LIMIT 1\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 640,
+        "wires": [
+            [
+                "f8dd98607c9151d9"
+            ]
+        ]
+    },
+    {
+        "id": "5d110c23cd833ee7",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "sepperate_data(actuator)",
+        "func": "let sep = msg.topic.split(\"/\");\nlet value = msg.payload;\nlet version = value.version;\n\nlet topic = sep[4];\nmsg.payload ={\n        \"topic\":topic,\n        \"version\":version,\n\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 720,
+        "wires": [
+            [
+                "94c9fab152253a8c"
+            ]
+        ]
+    },
+    {
+        "id": "3d8729991d0cf88e",
+        "type": "debug",
+        "z": "c6649296a9f2821a",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1580,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "9c3848f02e4779d0",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "function 29",
+        "func": "let device_id = msg.payload[0].device_id;\nmsg.payload = {\n    \"device_id\":device_id\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 680,
+        "wires": [
+            [
+                "94c9fab152253a8c"
+            ]
+        ]
+    },
+    {
+        "id": "94c9fab152253a8c",
+        "type": "join",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "mode": "custom",
+        "build": "merged",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "1",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 930,
+        "y": 720,
+        "wires": [
+            [
+                "0bfb040df1bbb267"
+            ]
+        ]
+    },
+    {
+        "id": "0bfb040df1bbb267",
+        "type": "function",
+        "z": "c6649296a9f2821a",
+        "name": "actuator",
+        "func": "let value = msg.payload;\nlet topic = value.topic;\nlet device_id = value.device_id;\nlet version = value.version;\nif (topic == \"initial\"){\n    msg.payload = [device_id,version]\n    msg.topic = \"INSERT INTO Initial(device_id,version)VALUES(?,?);\"\n}\nelse\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 720,
+        "wires": [
+            [
+                "b4f80d0eb09247e6"
+            ]
+        ]
+    },
+    {
+        "id": "b4f80d0eb09247e6",
+        "type": "mysql",
+        "z": "c6649296a9f2821a",
+        "mydb": "3f5ef7798f45a916",
+        "name": "",
+        "x": 1270,
+        "y": 720,
+        "wires": [
+            [
+                "3d8729991d0cf88e",
+                "5782765c6ba147cc"
+            ]
+        ]
+    },
+    {
+        "id": "5782765c6ba147cc",
+        "type": "http response",
+        "z": "c6649296a9f2821a",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 1540,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "3f5ef7798f45a916",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "167.71.205.31",
+        "port": "3306",
+        "db": "mushroom",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "06044633b5fe67a5",
+        "type": "mqtt-broker",
+        "name": "MS_Server",
+        "broker": "a1l6frsfgl0yj3-ats.iot.ap-southeast-1.amazonaws.com",
+        "port": "8883",
+        "tls": "d861f28c039fbefc",
+        "clientid": "MS_Server",
+        "autoConnect": true,
+        "usetls": true,
+        "protocolVersion": "3",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "d861f28c039fbefc",
+        "type": "tls-config",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "certificate.pem.crt",
+        "keyname": "private.pem.key",
+        "caname": "AmazonRootCA1.pem",
+        "servername": "",
+        "verifyservercert": true,
+        "alpnprotocol": ""
+    }
+]
